@@ -1,2 +1,2 @@
 # ray-caster
-A software raycaster made from scratch in Rust.
+A software ray caster made from scratch in Rust.
