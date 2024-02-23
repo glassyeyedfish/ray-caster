@@ -18,7 +18,7 @@ impl MyBuffer {
     }
 
     pub fn set_pixel(&mut self, x: i32, y: i32, color: u32) {
-        if 0 <= x && x < 320 && 0 <= y && y < 240 {
+        if (0..320).contains(&x) && (0..240).contains(&y) {
             self.pixels[(x + y * 320) as usize] = color;
         }
     }

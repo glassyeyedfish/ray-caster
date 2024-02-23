@@ -17,12 +17,12 @@ pub const KEY_RIGHT: u8 = 1 << 4;
 pub const KEY_UP: u8 = 1 << 5;
 
 #[derive(Debug)]
-pub struct TetraAPI {
+pub struct EngineAPI {
     curr_key_mask: u8,
     prev_key_mask: u8,
 }
 
-impl TetraAPI {
+impl EngineAPI {
     fn new() -> Self {
         let curr_key_mask = 0u8;
         let prev_key_mask = 0u8;
@@ -35,19 +35,22 @@ impl TetraAPI {
     }
 }
 
-pub struct Tetra<S> {
+pub struct Engine<S> {
     event_loop: EventLoop<()>,
     window: Rc<Window>,
     surface: Surface<Rc<Window>, Rc<Window>>,
     buf_width: u32,
     buf_height: u32,
-    delta_time: f32,
-    instant: Instant,
+    fps: f32,
+    frames: i32,
+    fps_time: Instant,
+    dt: f32,
+    frame_time: Instant,
     game_state: S,
-    api: TetraAPI,
+    api: EngineAPI,
 }
 
-impl<S> Tetra<S> {
+impl<S> Engine<S> {
     pub fn new(
         buf_width: u32,
         buf_height: u32,
@@ -67,25 +70,32 @@ impl<S> Tetra<S> {
         let context = Context::new(window.clone()).unwrap();
         let surface = Surface::new(&context, window.clone()).unwrap();
 
-        let delta_time = 1.0 / target_fps;
-        let instant = Instant::now();
+        let fps = 0.0;
+        let frames = 0;
+        let fps_time = Instant::now();
 
-        let api = TetraAPI::new();
+        let dt = 1.0 / target_fps;
+        let frame_time = Instant::now();
 
-        Tetra {
+        let api = EngineAPI::new();
+
+        Engine {
             event_loop,
             window,
             surface,
             buf_width,
             buf_height,
-            delta_time,
-            instant,
+            fps,
+            frames,
+            fps_time,
+            dt,
+            frame_time,
             game_state,
             api,
         }
     }
 
-    pub fn run(mut self, init: fn(&mut S), update: fn(&mut S, &TetraAPI), render: fn(&mut S) -> &[u32]) {
+    pub fn run(mut self, init: fn(&mut S), update: fn(&mut S, &EngineAPI), render: fn(&mut S) -> &[u32]) {
         init(&mut self.game_state);
 
         self.event_loop
@@ -95,9 +105,19 @@ impl<S> Tetra<S> {
                     ..
                 } => elwt.exit(),
                 Event::AboutToWait => {
-                    if self.instant.elapsed().as_secs_f32() >= self.delta_time {
-                        self.instant = Instant::now();
+
+                    if self.frame_time.elapsed().as_secs_f32() >= self.dt {
+                        self.frames += 1;
+
+                        if self.fps_time.elapsed().as_secs_f32() >= 1.0 {
+                            println!("FPS: {}", self.frames);
+                            self.fps_time = Instant::now();
+                            self.frames = 0;
+                        }
+
                         update(&mut self.game_state, &self.api);
+
+                        self.frame_time = Instant::now();
                         self.api.prev_key_mask = self.api.curr_key_mask;
                         self.window.request_redraw();
                     }
@@ -133,7 +153,7 @@ impl<S> Tetra<S> {
                 } => {
                     let mask: u8;
                     if let PhysicalKey::Code(c) = e.physical_key {
-                        mask = Tetra::<S>::keycode_to_mask(c);
+                        mask = Engine::<S>::keycode_to_mask(c);
 
                         match e.state {
                             winit::event::ElementState::Pressed => self.api.curr_key_mask |= mask,

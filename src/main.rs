@@ -1,11 +1,13 @@
+#![allow(dead_code)]
+
 mod buffer;
 mod game;
-mod tetra;
+mod engine;
 
 use std::f32::consts::PI;
 
 use game::MyGameState;
-use tetra::{Tetra, TetraAPI, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_UP};
+use engine::{Engine, EngineAPI, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_UP};
 
 #[rustfmt::skip]
 const MAP: [[u8; 16]; 12]= [
@@ -25,7 +27,7 @@ const MAP: [[u8; 16]; 12]= [
 
 fn init(_gs: &mut MyGameState) {}
 
-fn update(gs: &mut MyGameState, api: &TetraAPI) {
+fn update(gs: &mut MyGameState, api: &EngineAPI) {
     if api.is_key_down(KEY_UP) {
         gs.player.x += 1.5 * gs.player.a.cos();
         gs.player.y += 1.5 * gs.player.a.sin();
@@ -105,6 +107,6 @@ fn render(gs: &mut MyGameState) -> &[u32] {
 
 fn main() {
     let gs = MyGameState::new();
-    let backend: Tetra<MyGameState> = Tetra::new(320, 240, "Ray Caster", 30.0, gs);
-    backend.run(init, update, render);
+    let ng: Engine<MyGameState> = Engine::new(320, 240, "Ray Caster", 30.0, gs);
+    ng.run(init, update, render);
 }
