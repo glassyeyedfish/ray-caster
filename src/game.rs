@@ -17,8 +17,8 @@ impl Player {
         }
     }
 
-    pub fn draw(&self, buf: &mut MyBuffer) {
-        buf.draw_rect(self.x as u32 - 1, self.y as u32 - 1, 3, 3, 0xFFFFFF);
+    pub fn draw(&self, buf: &mut MyBuffer, color: u32) {
+        buf.draw_rect(self.x as i32 - 1, self.y as i32 - 1, 3, 3, color);
     }
 }
 
