@@ -21,12 +21,12 @@ impl MyBuffer {
         self.pixels[(x + y * 320) as usize] = color;
     }
 
-    // pub fn get_pixel(&self, x: u32, y: u32) -> u32 {
-    //     self.pixels[(y * 320 + x) as usize]
-    // }
+    pub fn get_pixel(&self, x: u32, y: u32) -> u32 {
+        self.pixels[(y * 320 + x) as usize]
+    }
 
     pub fn draw_rect(&mut self, x: i32, y: i32, w: i32, h: i32, color: u32) {
-        for i in x..w+x {
+        for i in x..x+w {
             for j in y..y+h {
                 self.pixels[(i + j * 320) as usize] = color;
             }
