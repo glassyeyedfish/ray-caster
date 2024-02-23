@@ -27,7 +27,10 @@ impl EngineAPI {
         let curr_key_mask = 0u8;
         let prev_key_mask = 0u8;
 
-        Self { curr_key_mask, prev_key_mask }
+        Self {
+            curr_key_mask,
+            prev_key_mask,
+        }
     }
 
     pub fn is_key_down(&self, key: u8) -> bool {
@@ -95,7 +98,12 @@ impl<S> Engine<S> {
         }
     }
 
-    pub fn run(mut self, init: fn(&mut S), update: fn(&mut S, &EngineAPI), render: fn(&mut S) -> &[u32]) {
+    pub fn run(
+        mut self,
+        init: fn(&mut S),
+        update: fn(&mut S, &EngineAPI),
+        render: fn(&mut S) -> &[u32],
+    ) {
         init(&mut self.game_state);
 
         self.event_loop
@@ -105,7 +113,6 @@ impl<S> Engine<S> {
                     ..
                 } => elwt.exit(),
                 Event::AboutToWait => {
-
                     if self.frame_time.elapsed().as_secs_f32() >= self.dt {
                         self.frames += 1;
 

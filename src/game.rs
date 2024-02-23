@@ -42,21 +42,36 @@ impl Map {
             [1,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,2],
         ];
 
-        Self{ hor_walls, ver_walls }
+        Self {
+            hor_walls,
+            ver_walls,
+        }
     }
 
     pub fn draw(&self, buf: &mut MyBuffer) {
-        // Draw horizontal wallk on the top 
+        // Draw horizontal wallk on the top
         for x in 0..16 {
             if self.hor_walls[0][x as usize] != 0 {
-                buf.draw_rect(20 * x, 0, 20, 1, Map::get_wall_color(self.hor_walls[0][x as usize]));
+                buf.draw_rect(
+                    20 * x,
+                    0,
+                    20,
+                    1,
+                    Map::get_wall_color(self.hor_walls[0][x as usize]),
+                );
             }
         }
 
         // Draw horizontal wallk on the bottom
         for x in 0..16 {
             if self.hor_walls[12][x as usize] != 0 {
-                buf.draw_rect(20 * x, 239, 20, 1, Map::get_wall_color(self.hor_walls[12][x as usize]));
+                buf.draw_rect(
+                    20 * x,
+                    239,
+                    20,
+                    1,
+                    Map::get_wall_color(self.hor_walls[12][x as usize]),
+                );
             }
         }
 
@@ -64,7 +79,13 @@ impl Map {
         for x in 0..16 {
             for y in 1..12 {
                 if self.hor_walls[y as usize][x as usize] != 0 {
-                    buf.draw_rect(20 * x, 20 * y - 1, 20, 2, Map::get_wall_color(self.hor_walls[y as usize][x as usize]));
+                    buf.draw_rect(
+                        20 * x,
+                        20 * y - 1,
+                        20,
+                        2,
+                        Map::get_wall_color(self.hor_walls[y as usize][x as usize]),
+                    );
                 }
             }
         }
@@ -72,22 +93,40 @@ impl Map {
         // Draw vertical walls on the left
         for y in 0..12 {
             if self.ver_walls[y as usize][0] != 0 {
-                buf.draw_rect(0, 20 * y, 1, 20, Map::get_wall_color(self.ver_walls[y as usize][0]));
+                buf.draw_rect(
+                    0,
+                    20 * y,
+                    1,
+                    20,
+                    Map::get_wall_color(self.ver_walls[y as usize][0]),
+                );
             }
         }
-        
+
         // Draw vertical walls on the right
         for y in 0..12 {
             if self.ver_walls[y as usize][16] != 0 {
-                buf.draw_rect(319, 20 * y, 1, 20, Map::get_wall_color(self.ver_walls[y as usize][16]));
+                buf.draw_rect(
+                    319,
+                    20 * y,
+                    1,
+                    20,
+                    Map::get_wall_color(self.ver_walls[y as usize][16]),
+                );
             }
         }
-        
+
         // Draw the rest of the vertical walls
         for y in 0..12 {
             for x in 1..16 {
                 if self.ver_walls[y as usize][x as usize] != 0 {
-                    buf.draw_rect(20 * x - 1, 20 * y, 2, 20, Map::get_wall_color(self.ver_walls[y as usize][x as usize]));
+                    buf.draw_rect(
+                        20 * x - 1,
+                        20 * y,
+                        2,
+                        20,
+                        Map::get_wall_color(self.ver_walls[y as usize][x as usize]),
+                    );
                 }
             }
         }
@@ -119,8 +158,15 @@ impl Player {
         }
     }
 
-    pub fn draw(&self, buf: &mut MyBuffer, color: u32) {
-        buf.draw_rect(self.x as i32 - 1, self.y as i32 - 1, 3, 3, color);
+    pub fn draw(&self, buf: &mut MyBuffer) {
+        buf.draw_line(
+            self.x as i32,
+            self.y as i32,
+            (self.x + 5.0 * self.a.cos()) as i32,
+            (self.y + 5.0 * self.a.sin()) as i32,
+            0xFF0000,
+        );
+        buf.draw_rect(self.x as i32 - 1, self.y as i32 - 1, 3, 3, 0xFFFFFF);
     }
 }
 

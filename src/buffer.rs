@@ -26,8 +26,8 @@ impl MyBuffer {
     }
 
     pub fn draw_rect(&mut self, x: i32, y: i32, w: i32, h: i32, color: u32) {
-        for i in x..x+w {
-            for j in y..y+h {
+        for i in x..x + w {
+            for j in y..y + h {
                 self.pixels[(i + j * 320) as usize] = color;
             }
         }
@@ -65,7 +65,7 @@ impl MyBuffer {
 
                 if err > dx {
                     y += if y2 > y1 { 1 } else { -1 };
-                    err -= 2*dx;
+                    err -= 2 * dx;
                 }
             }
         } else {
@@ -75,7 +75,7 @@ impl MyBuffer {
 
                 if err > dx {
                     y += if y2 > y1 { 1 } else { -1 };
-                    err -= 2*dx;
+                    err -= 2 * dx;
                 }
             }
         }

@@ -1,11 +1,11 @@
 #![allow(dead_code)]
 
 mod buffer;
-mod game;
 mod engine;
+mod game;
 
-use game::MyGameState;
 use engine::{Engine, EngineAPI, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_UP};
+use game::MyGameState;
 
 fn init(_gs: &mut MyGameState) {}
 
@@ -36,7 +36,7 @@ fn render(gs: &mut MyGameState) -> &[u32] {
     // Cast a ray
 
     // Draw the player
-    gs.player.draw(&mut gs.buf, 0xFFFFFF);
+    gs.player.draw(&mut gs.buf);
 
     gs.buf.get_buf()
 }
