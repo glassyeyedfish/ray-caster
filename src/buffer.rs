@@ -12,15 +12,13 @@ impl MyBuffer {
     pub fn clear(&mut self, color: u32) {
         for x in 0..320 {
             for y in 0..240 {
-                self.set_pixel(x, y, color);
+                self.pixels[(x + y * 320) as usize] = color;
             }
         }
     }
 
     pub fn set_pixel(&mut self, x: i32, y: i32, color: u32) {
-        if (0..320).contains(&x) && (0..240).contains(&y) {
-            self.pixels[(x + y * 320) as usize] = color;
-        }
+        self.pixels[(x + y * 320) as usize] = color;
     }
 
     // pub fn get_pixel(&self, x: u32, y: u32) -> u32 {
@@ -30,7 +28,7 @@ impl MyBuffer {
     pub fn draw_rect(&mut self, x: i32, y: i32, w: i32, h: i32, color: u32) {
         for i in x..w+x {
             for j in y..y+h {
-                self.set_pixel(i, j, color);
+                self.pixels[(i + j * 320) as usize] = color;
             }
         }
     }
