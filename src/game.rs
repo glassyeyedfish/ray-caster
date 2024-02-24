@@ -132,6 +132,10 @@ impl Map {
         }
     }
 
+    pub fn hor_wall_at(&self, x: i32, y: i32) -> u8 {
+        self.hor_walls[y as usize / 20][x as usize / 20]
+    }
+
     fn get_wall_color(code: u8) -> u32 {
         match code {
             1 => 0x3F7FBF,
@@ -154,7 +158,7 @@ impl Player {
         Player {
             x: 30.0,
             y: 30.0,
-            a: PI / 4.0,
+            a: PI / 3.0,
         }
     }
 
@@ -162,8 +166,8 @@ impl Player {
         buf.draw_line(
             self.x as i32,
             self.y as i32,
-            (self.x + 5.0 * self.a.cos()) as i32,
-            (self.y + 5.0 * self.a.sin()) as i32,
+            (self.x + 8.0 * self.a.cos()) as i32,
+            (self.y + 8.0 * self.a.sin()) as i32,
             0xFF0000,
         );
         buf.draw_rect(self.x as i32 - 1, self.y as i32 - 1, 3, 3, 0xFFFFFF);

@@ -117,7 +117,7 @@ impl<S> Engine<S> {
                         self.frames += 1;
 
                         if self.fps_time.elapsed().as_secs_f32() >= 1.0 {
-                            println!("FPS: {}", self.frames);
+                            // println!("FPS: {}", self.frames);
                             self.fps_time = Instant::now();
                             self.frames = 0;
                         }
