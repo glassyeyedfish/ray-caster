@@ -10,6 +10,9 @@
 - Delete old ray casting code and map drawing code
 - Implement new map drawing code
 
+### 2024-02-24
+- Started on the new ray-casting algorithm
+
 ## To-do
 - Collision between player and walls
 - New ray-casting algorithm
