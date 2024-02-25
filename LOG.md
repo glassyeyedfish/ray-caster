@@ -13,6 +13,9 @@
 ### 2024-02-24
 - Started on the new ray-casting algorithm
 
+### 2024-02-25
+- Finished buggy implementation of new ray-casting algorithm
+
 ## To-do
 - Collision between player and walls
 - New ray-casting algorithm

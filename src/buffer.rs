@@ -18,7 +18,9 @@ impl MyBuffer {
     }
 
     pub fn set_pixel(&mut self, x: i32, y: i32, color: u32) {
-        self.pixels[(x + y * 320) as usize] = color;
+        if (0..320).contains(&x) && (0..240).contains(&y) {
+            self.pixels[(x + y * 320) as usize] = color;
+        }
     }
 
     pub fn get_pixel(&self, x: u32, y: u32) -> u32 {
@@ -28,13 +30,12 @@ impl MyBuffer {
     pub fn draw_rect(&mut self, x: i32, y: i32, w: i32, h: i32, color: u32) {
         for i in x..x + w {
             for j in y..y + h {
-                self.pixels[(i + j * 320) as usize] = color;
+                self.set_pixel(i, j, color);
             }
         }
     }
 
-    // Bresenham's line drawing algorithm.
-    // Implementation taken from:
+    // Bresenham's line drawing algorithm. Implementation taken from:
     // https://github.com/ssloy/tinyrenderer/wiki/Lesson-1:-Bresenham%E2%80%99s-Line-Drawing-Algorithm
     pub fn draw_line(&mut self, mut x1: i32, mut y1: i32, mut x2: i32, mut y2: i32, color: u32) {
         let mut steep = false;

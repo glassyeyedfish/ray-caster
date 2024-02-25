@@ -1,4 +1,7 @@
-use std::f32::consts::PI;
+use std::{
+    f32::consts::PI,
+    ops::{Div, Mul},
+};
 
 use crate::buffer::MyBuffer;
 
@@ -49,35 +52,9 @@ impl Map {
     }
 
     pub fn draw(&self, buf: &mut MyBuffer) {
-        // Draw horizontal wallk on the top
+        // Draw the horizontal walls
         for x in 0..16 {
-            if self.hor_walls[0][x as usize] != 0 {
-                buf.draw_rect(
-                    20 * x,
-                    0,
-                    20,
-                    1,
-                    Map::get_wall_color(self.hor_walls[0][x as usize]),
-                );
-            }
-        }
-
-        // Draw horizontal wallk on the bottom
-        for x in 0..16 {
-            if self.hor_walls[12][x as usize] != 0 {
-                buf.draw_rect(
-                    20 * x,
-                    239,
-                    20,
-                    1,
-                    Map::get_wall_color(self.hor_walls[12][x as usize]),
-                );
-            }
-        }
-
-        // Draw the rest of the horizontal walls
-        for x in 0..16 {
-            for y in 1..12 {
+            for y in 0..13 {
                 if self.hor_walls[y as usize][x as usize] != 0 {
                     buf.draw_rect(
                         20 * x,
@@ -90,35 +67,9 @@ impl Map {
             }
         }
 
-        // Draw vertical walls on the left
+        // Draw the vertical walls
         for y in 0..12 {
-            if self.ver_walls[y as usize][0] != 0 {
-                buf.draw_rect(
-                    0,
-                    20 * y,
-                    1,
-                    20,
-                    Map::get_wall_color(self.ver_walls[y as usize][0]),
-                );
-            }
-        }
-
-        // Draw vertical walls on the right
-        for y in 0..12 {
-            if self.ver_walls[y as usize][16] != 0 {
-                buf.draw_rect(
-                    319,
-                    20 * y,
-                    1,
-                    20,
-                    Map::get_wall_color(self.ver_walls[y as usize][16]),
-                );
-            }
-        }
-
-        // Draw the rest of the vertical walls
-        for y in 0..12 {
-            for x in 1..16 {
+            for x in 0..17 {
                 if self.ver_walls[y as usize][x as usize] != 0 {
                     buf.draw_rect(
                         20 * x - 1,
@@ -132,11 +83,61 @@ impl Map {
         }
     }
 
-    pub fn hor_wall_at(&self, x: i32, y: i32) -> u8 {
-        self.hor_walls[y as usize / 20][x as usize / 20]
+    pub fn check_down(&self, x: f32, y: f32, a: f32) -> (i32, i32, u8) {
+        let cy = y.div(20.0).ceil().mul(20.0);
+        let cx = (cy - y).div(a.tan()) + x;
+        (
+            cx as i32,
+            cy as i32,
+            self.get_hor_wall_code(cx as i32 / 20, cy as i32 / 20),
+        )
     }
 
-    fn get_wall_color(code: u8) -> u32 {
+    pub fn check_up(&self, x: f32, y: f32, a: f32) -> (i32, i32, u8) {
+        let cy = y.div(20.0).floor().mul(20.0);
+        let cx = (cy - y).div(a.tan()) + x;
+        (
+            cx as i32,
+            cy as i32,
+            self.get_hor_wall_code(cx as i32 / 20, cy as i32 / 20),
+        )
+    }
+
+    pub fn check_left(&self, x: f32, y: f32, a: f32) -> (i32, i32, u8) {
+        let cx = x.div(20.0).floor().mul(20.0);
+        let cy = (cx - x).mul(a.tan()) + y;
+        (
+            cx as i32,
+            cy as i32,
+            self.get_ver_wall_code(cx as i32 / 20, cy as i32 / 20),
+        )
+    }
+
+    pub fn check_right(&self, x: f32, y: f32, a: f32) -> (i32, i32, u8) {
+        let cx = x.div(20.0).ceil().mul(20.0);
+        let cy = (cx - x).mul(a.tan()) + y;
+        (
+            cx as i32,
+            cy as i32,
+            self.get_ver_wall_code(cx as i32 / 20, cy as i32 / 20),
+        )
+    }
+
+    pub fn get_hor_wall_code(&self, x: i32, y: i32) -> u8 {
+        if (0..16).contains(&x) && (0..13).contains(&y) {
+            return self.hor_walls[y as usize][x as usize];
+        }
+        0
+    }
+
+    pub fn get_ver_wall_code(&self, x: i32, y: i32) -> u8 {
+        if (0..17).contains(&x) && (0..12).contains(&y) {
+            return self.ver_walls[y as usize][x as usize];
+        }
+        0
+    }
+
+    pub fn get_wall_color(code: u8) -> u32 {
         match code {
             1 => 0x3F7FBF,
             2 => 0x7F3FBF,
@@ -156,9 +157,9 @@ pub struct Player {
 impl Player {
     pub fn new() -> Self {
         Player {
-            x: 30.0,
-            y: 30.0,
-            a: PI / 3.0,
+            x: 110.0,
+            y: 15.0,
+            a: 3.0 * PI / 2.0,
         }
     }
 
@@ -178,6 +179,7 @@ pub struct MyGameState {
     pub buf: MyBuffer,
     pub player: Player,
     pub map: Map,
+    pub show_map: bool,
 }
 
 impl MyGameState {
@@ -185,7 +187,8 @@ impl MyGameState {
         let buf = MyBuffer::new();
         let player = Player::new();
         let map = Map::new();
+        let show_map = false;
 
-        MyGameState { buf, player, map }
+        MyGameState { buf, player, map, show_map }
     }
 }

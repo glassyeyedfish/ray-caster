@@ -36,6 +36,10 @@ impl EngineAPI {
     pub fn is_key_down(&self, key: u8) -> bool {
         self.curr_key_mask & key != 0
     }
+
+    pub fn is_key_pressed(&self, key: u8) -> bool {
+        self.curr_key_mask & key != 0 && self.prev_key_mask & key == 0
+    }
 }
 
 pub struct Engine<S> {
